@@ -22,6 +22,17 @@ curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/your/file
 ```
 
 To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile.txt, and send a GET request.
+You can use Invoke-WebRequest as well for endpoint 1:
+```
+
+$url = "http://localhost:3000/api/data1"
+
+$response = Invoke-WebRequest -Uri $url -Method Get
+
+# Print the response bod
+Write-Output $response.Content
+```
+But for 2 and 3 I think that would be another project on it's own.
 
 # Note:
 
