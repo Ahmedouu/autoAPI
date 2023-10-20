@@ -21,7 +21,7 @@ curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/your/file
 
 ```
 
-To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile.txt, and it's a GET request.
+To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile.txt, and send a GET request.
 
 # Note:
 
