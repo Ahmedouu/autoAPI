@@ -2,7 +2,7 @@
 An https API that calls itself, hashes txt files as well and compares the resulting hash, self signed certificates included because I like https more than http, doesn't mean more security though at this point it's just fashion.
 
 # Set Up:
-if you want to run the server in https use WSL on windows or use a unix machine, ignore this and jump straight to One last install ... if you don't care about fake https (all https is fake btw):
+if you want to run the server in https use WSL on windows or use a unix machine, ignore this and jump straight to One last install (highlighted) ... if you don't care about fake https (all https is fake btw):
 ```
 ~$ openssl genrsa -des3 -out ca.key 2048 #this will prompt a PEM password enter it
 ~$ openssl req -x509 -new -nodes -key ca.key -sha256 -days 365 -out ca.crt #enter the password from the previous step, then enter sensible values or just  leave the field blank
