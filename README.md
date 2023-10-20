@@ -1,5 +1,5 @@
 
-An API that calls itself, hashes txt files as well and compares the resulting hash.
+An https API that calls itself, hashes txt files as well and compares the resulting hash, self signed certificates included because I like https more than http, doesn't mean more security at this point it's just fashion.
 
 # Set Up:
 
