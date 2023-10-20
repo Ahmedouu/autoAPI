@@ -2,10 +2,12 @@
 # A demo
 
 
-An API that calls itself.
+An API that calls itself, hashes some files you give to it as well.
 
 # 1) Set Up:
-npm install first of all, then run node server.js
+
+npm install
+node server.js
 
 
 # Testing
