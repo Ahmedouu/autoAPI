@@ -2,7 +2,7 @@
 # A demo
 
 
-Self calling API with files and stuff, ..
+An API that calls itself.
 
 # 1) Set Up:
 npm install first of all, then run node server.js
