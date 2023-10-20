@@ -15,3 +15,9 @@ using POSTMAN or whatever tool you prefer, navigate to body ==> form data here i
 ![image](https://github.com/Ahmedouu/APIFun/assets/33392644/fe6f13ab-3802-426c-9391-503fedeff0da)
 
 
+So in endpoint1, you can go /utils and replace the randomFile.txt by any file you want just make sure to rename to randomFile. 
+
+
+# Note:
+
+You can also use html files if you like the hashing function takes cares of normalizing html files as well.
