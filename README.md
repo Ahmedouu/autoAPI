@@ -1,7 +1,7 @@
 
 An API that calls itself, hashes txt files as well.
 
-# 1) Set Up:
+# Set Up:
 
 ```
 npm install
