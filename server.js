@@ -55,7 +55,7 @@ app.post('/api/data2', upload.single('file'), async (req, res) => {
 });
 
 
-//endpoint 3// this endpoint takes two files and hashes both of them and tells you some info about the files
+//endpoint 3// this endpoint takes two files and hashes both of them and tells you some info about the files 
 app.post('/api/data3', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), async (req, res) => {
   
   const file1Buffer = req.files.file1[0].buffer; 
@@ -77,7 +77,7 @@ app.post('/api/data3', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'f
   
   try {
   if (hash === newHashedContent1 && newHashedContent1 === newHashedContent2) {
-    console.log("All hashes are equal");
+    res.status(200).send("All hashes are equal");
 } else {
     if (hash === newHashedContent1) {
         res.status(200).send("file1 matches the file we have in the server");
@@ -93,11 +93,15 @@ app.post('/api/data3', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'f
     res.status(505).send(error)
   }
 
-  res.status(201).json({ message: ` hashes of files 1 and 2 respectively: ${newHashedContent2} -- ${newHashedContent1}` });
+  //res.status(201).json({ message: ` hashes of files 1 and 2 respectively: ${newHashedContent2} -- ${newHashedContent1}` });
 });
 
 
 //endpoint 4 // upload as many files as you like hash all of them but beware this code is O(n^2)
+
+
+
+//endpoint 5 // combines endpoint 3 and 4 
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
