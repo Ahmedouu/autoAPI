@@ -1,5 +1,5 @@
 
-An API that calls itself, hashes txt files as well.
+An API that calls itself, hashes txt files as well and compares the resulting hash.
 
 # Set Up:
 
