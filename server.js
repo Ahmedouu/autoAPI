@@ -50,11 +50,54 @@ app.post('/api/data2', upload.single('file'), async (req, res) => {
 
   }
   else {
-    res.send('sans commentaire')
+    res.send("the hashes don't match big guy")
   }
 });
 
-//endpoint 3// this endpoint is the craziest it takes two files and hashes both of them and tells you some info about the files 
+
+//endpoint 3// this endpoint takes two files and hashes both of them and tells you some info about the files
+app.post('/api/data3', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), async (req, res) => {
+  
+  const file1Buffer = req.files.file1[0].buffer; 
+  const file2Buffer = req.files.file2[0].buffer; 
+  const fileContent1 = file1Buffer.toString('utf8'); 
+  const newHashedContent1 = HASHER(fileContent1);
+  const fileContent2 = file2Buffer.toString('utf8'); 
+  const newHashedContent2 = HASHER(fileContent2);
+
+
+  await axios.get('http://localhost:3000/api/data1')
+  .then(response => {
+    console.log(response.data['hashedFile']);
+    hash = response.data['hashedFile']
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+  
+  try {
+  if (hash === newHashedContent1 && newHashedContent1 === newHashedContent2) {
+    console.log("All hashes are equal");
+} else {
+    if (hash === newHashedContent1) {
+        res.status(200).send("file1 matches the file we have in the server");
+    }
+    if (hash === newHashedContent2) {
+        res.status(200).send("file2 matches the file we have in the server");
+    }
+    if (newHashedContent1 === newHashedContent2) {
+        res.status(200).send("file1 and file2 are a match");
+    }
+}}
+  catch(error){
+    res.status(505).send(error)
+  }
+
+  res.status(201).json({ message: ` hashes of files 1 and 2 respectively: ${newHashedContent2} -- ${newHashedContent1}` });
+});
+
+
+//endpoint 4 // upload as many files as you like hash all of them but beware this code is O(n^2)
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
