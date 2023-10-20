@@ -15,8 +15,13 @@ using POSTMAN, navigate to body ==> form data here is what the endpoint3 test lo
 
 ![image](https://github.com/Ahmedouu/autoAPI/assets/33392644/bd12d896-42bf-46b5-987f-76ece2323600)
 
+Here is an example of curl for endpoint 2 if you prefer curl:
+```
+curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/your/file" http://localhost:3000/api/data2
 
-To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile. 
+```
+
+To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile.
 
 # Note:
 
