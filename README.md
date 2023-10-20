@@ -30,6 +30,7 @@ then on top of server.js add the following:
 ```
 const https = require('https'); //add this to the top of the server with the other requires
 ```
+One last install to make sure we have everything then run the server:
 ```
 npm install
 node server.js
