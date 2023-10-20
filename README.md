@@ -13,7 +13,7 @@ At the moment we have created 4 files in the root directory of the server.
 Now enter the following in terminal:
 ~$ openssl x509 -req -in localhost.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out localhost.crt -days 365 -sha256 -extfile localhost.ext #on prompt enter the PEM password from the first step
 ```
-and then navigate to server.js comment or delete anything related to starting the server then add the following:
+and then navigate to server.js comment and delete anything related to starting the server then add the following:
 ```
 // start server
 let server = https.createServer(httpsOptions, app);
