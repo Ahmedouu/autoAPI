@@ -2,7 +2,18 @@
 An https API that calls itself, hashes txt files as well and compares the resulting hash, self signed certificates included because I like https more than http, doesn't mean more security though at this point it's just fashion.
 
 # Set Up:
+if you want to run the server in https use WSL on windows or use a unix machine:
+```
+~$ openssl genrsa -des3 -out ca.key 2048 #this will prompt a PEM password enter it
+~$ openssl req -x509 -new -nodes -key ca.key -sha256 -days 365 -out ca.crt #enter the password from the previous step, then enter sensible values or just  leave the field blank
+~$ openssl genrsa -out localhost.key 2048
+~$ openssl req -new -key localhost.key -out localhost.csr -addext "subjectAltName = DNS:localhost" #repeat step 2
 
+At the moment we have created 4 files in the root directory of the server.
+Now enter the following in terminal:
+~$ openssl x509 -req -in localhost.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out localhost.crt -days 365 -sha256 -extfile localhost.ext #on prompt enter the PEM password from the first step
+
+```
 ```
 npm install
 node server.js
