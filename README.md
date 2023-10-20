@@ -6,9 +6,10 @@ An API that calls itself, hashes some files you give to it as well.
 
 # 1) Set Up:
 
+```
 npm install
 node server.js
-
+```
 
 # Testing
 
