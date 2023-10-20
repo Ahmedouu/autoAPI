@@ -10,6 +10,5 @@ run npm install first of all, then run node server.js
 
 
 # Testing
-I am back to working from my windows machine, so I will show you how to use powershell to handle api requests, of course you can download curl or postman or anything else but I prefer to powershell whenever possible
 
 
