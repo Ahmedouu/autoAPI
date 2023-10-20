@@ -22,9 +22,12 @@ server.listen(3000, ()=>{
   console.log('I am listening.....');
 })
 ```
-P.S: you will need to install run:
+P.S: you will need to install https:
 ```
 npm install https
+```
+then on top of server.js add the following: 
+```
 const https = require('https'); //add this to the top of the server with the other requires
 ```
 ```
