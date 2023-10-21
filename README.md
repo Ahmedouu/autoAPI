@@ -63,7 +63,7 @@ But for 2 and 3 it's not very straightforward trying to send mutlipart/form-data
 
 First of you all since you are using powershell you must be aware of funny windows is with the backslash ('/'), so we need to take that into account before getting to the intresting stuff, what seems to work for me when using powershell is the combination of single quotes '' and backslashes // for paths, I advise to use this script that checks if the file exists and is readable and properly encoded:
 ```
-$filePath = 'C:\\path\\To\\autoAPI\\utils\\randomFile.txt' #single quotes and double backslashes.
+$filePath = 'C:\\path\\To\\autoAPI\\utils\\randomFile.txt' #single quotes and double backslashes. you can use this on other files as well
 if (Test-Path $filePath) {
     try {
         $fileBytes = [System.IO.File]::ReadAllBytes($filePath)
@@ -79,7 +79,7 @@ if (Test-Path $filePath) {
 If you get any errors here check the path and alterante between using single quotes and double quotes, single backslash and double backslash until the file is found and readable.  
 Afterwards you would need to use the following script to test endpoint 2:
 ```
-$FilePath = 'C:\\path\\to\autoAPI\\utils\\randomFile.txt' 
+$FilePath = 'C:\\path\\to\\File.txt' 
 $URL = 'http://localhost:3000/api/data2'
 
 # Read the file and encode it as a UTF-8 string
@@ -101,7 +101,43 @@ $bodyLines = (
 # Send the POST reques
 Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines
 ```
-You could also use Invoke-WebRequest but it will retunes the entire HTTP response you could declare a variable $reponse = Invoke-WebRequest .... and access the content using $response.Content
+You could also use Invoke-WebRequest but it will retunes the entire HTTP response you could declare a variable $reponse = Invoke-WebRequest .... and access the content using $response.Content.
+
+To test endpoint 3 the same follows we just send two files this time:
+```
+$FilePath1 = 'C:\\path\\File1.txt'
+$FilePath2 = 'C:\\path\\File2.txt'
+$URL = 'http://localhost:3000/api/data3'
+
+# Read the files and encode them as UTF-8 strings
+$fileBytes1 = [System.IO.File]::ReadAllBytes($FilePath1);
+$fileEnc1 = [System.Text.Encoding]::GetEncoding('UTF-8').GetString($fileBytes1);
+
+$fileBytes2 = [System.IO.File]::ReadAllBytes($FilePath2);
+$fileEnc2 = [System.Text.Encoding]::GetEncoding('UTF-8').GetString($fileBytes2);
+
+# Create a unique boundary for the multipart/form-data
+$boundary = [System.Guid]::NewGuid().ToString();
+$LF = "`r`n";
+
+# Construct the body of the POST request
+$bodyLines = ( 
+    "--$boundary",
+    "Content-Disposition: form-data; name=`"file1`"; filename=`"temp1.txt`"",
+    "Content-Type: application/octet-stream$LF",
+    $fileEnc1,
+    "--$boundary",
+    "Content-Disposition: form-data; name=`"file2`"; filename=`"temp2.txt`"",
+    "Content-Type: application/octet-stream$LF",
+    $fileEnc2,
+    "--$boundary--$LF" 
+) -join $LF
+
+# Send the POST request
+Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines
+```
+
+
 # Note:
 
 You can also use html files if you like the hashing function takes cares of normalizing html files as well.
