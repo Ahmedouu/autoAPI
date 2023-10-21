@@ -60,6 +60,7 @@ $response = Invoke-WebRequest -Uri $url -Method Get
 Write-Output $response.Content
 ```
 But for 2 and 3 it's not very straightforward trying to send mutlipart/form-data using  Invoke-WebRequest or Invoke-RestMethod you will run into boundary errors if you attempt to do it the way curl does it, but you can if you want and here is how:
+
 First of you all since you are using powershell you must be aware of funny windows is with the backslash ('/'), so we need to take that into account before getting to the intresting stuff, what seems to work for me when using powershell is the combination of single quotes '' and backslashes // for paths, I advise to use this script that checks if the file exists and is readable and properly encoded:
 ```
 $filePath = 'C:\\path\\To\\autoAPI\\utils\\randomFile.txt' #single quotes and double backslashes.
