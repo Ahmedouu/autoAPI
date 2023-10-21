@@ -136,7 +136,9 @@ $bodyLines = (
 # Send the POST request
 Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines
 ```
-You can find the powershell scripts in the root directory of the project for your convenience.
+To test api/data4 just use the same script and change the url.
+
+You can find the powershell scripts in the root directory of the project for your convenience, and if you are wondering why anyone would go through all this just to send a POST request, there is good reason for me to do it, in testing I always end up sending the request before starting the server, Invoke-RestMethod understands that I am silly like that and lets the request fly out there long enough for me to realize the server is not running, saving me from the hassle of clicking enter again after starting the server.
 
 # Note:
 

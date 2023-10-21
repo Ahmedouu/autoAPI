@@ -6,6 +6,7 @@ const filePath = './utils/randomFile.txt'
 app.use(express.json());
 const axios = require('axios');
 const multer = require('multer')
+const FormData = require('form-data');
 const upload = multer();
 let hash;
 
@@ -32,10 +33,23 @@ app.get('/api/data1',  (req, res) => {
   });
 
 // endpoint 2 //this endpoint takes another files and hashes it and compares it to the hash from endpoint 1
-app.post('/api/data2', upload.single('file'), async (req, res) => {
-  const fileBuffer = req.file.buffer; 
+app.post('/api/data2', upload.any(), async (req, res) => {
+  
+  //Using any with multer is not very secure but I don't care about that just yet, we need to be able upload any file and dynamically find the file name.
+
+  let fileBuffer;
+
+  // find the file field 
+  const fileField = req.files.find(file => ['file', 'file2'].includes(file.fieldname));
+  
+  if (fileField) {
+    fileBuffer = fileField.buffer;
+  } else {
+    res.status(400).send('No file received.');
+  }
   const fileContent = fileBuffer.toString('utf8'); // convert buffer to string
   const newHashedContent = HASHER(fileContent); // hash the content
+
   await axios.get('http://localhost:3000/api/data1')
   .then(response => {
     console.log('cest tres chelo tu sais mira',response.data['hashedFile']);
@@ -46,7 +60,7 @@ app.post('/api/data2', upload.single('file'), async (req, res) => {
   });
   if (newHashedContent === hash){
     console.log("oooh baby what is good")
-    res.status(201).send('hmm the hashes do be matching')
+    res.status(201).send('hmm the hashes do be matching', hash)
 
   }
   else {
@@ -55,7 +69,7 @@ app.post('/api/data2', upload.single('file'), async (req, res) => {
 });
 
 
-//endpoint 3// this endpoint takes two files and hashes both of them and tells you some info about the files 
+//endpoint 3// this endpoint takes two files and hashes both of them and calls itself on endpoint 1 to find the hash of the file we have on the server
 app.post('/api/data3', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), async (req, res) => {
   
   const file1Buffer = req.files.file1[0].buffer; 
@@ -96,12 +110,41 @@ app.post('/api/data3', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'f
   //res.status(201).json({ message: ` hashes of files 1 and 2 respectively: ${newHashedContent2} -- ${newHashedContent1}` });
 });
 
+//this endpoint is going to take two files as input and pass one of them to endpoint 2 and returns what 
+app.post('/api/data4', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'file2', maxCount: 1 }]), async (req, res) => {
+  
+  const file1Buffer = req.files.file1[0].buffer; 
 
-//endpoint 4 // upload as many files as you like hash all of them but beware this code is O(n^2)
+  const fileBuffer = req.files.file2[0].buffer;
+
+  let data = new FormData();
+
+  try {
+  data.append('file2', fileBuffer, req.files.file2[0].originalname);
+  } catch (err){
+    console.error("couldn't append file sorry")
+  }
+  
+  // Send the POST request to /api/data2
+  await axios.post('http://localhost:3000/api/data2', data, {
+    headers: {
+      ...data.getHeaders()
+    }
+  })
+  .then(response => {
+    console.log(response.data);
+    res.send(response.data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    res.status(500).send('An error occurred while processing the request.');
+  });
+});
 
 
+//endpoint 5 // upload as many files as you like hash all of them but beware this code is O(n^2)
 
-//endpoint 5 // combines endpoint 3 and 4 
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
