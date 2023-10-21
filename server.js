@@ -36,16 +36,16 @@ app.post('/api/data2', upload.single('file'), async (req, res) => {
   const fileBuffer = req.file.buffer; 
   const fileContent = fileBuffer.toString('utf8'); // convert buffer to string
   const newHashedContent = HASHER(fileContent); // hash the content
-  console.log(`c est chelou tu sais mira ${newHashedContent}`)
   await axios.get('http://localhost:3000/api/data1')
   .then(response => {
-    console.log(response.data['hashedFile']);
+    console.log('cest tres chelo tu sais mira',response.data['hashedFile']);
     hash = response.data['hashedFile']
   })
   .catch(error => {
     console.error('Error:', error);
   });
   if (newHashedContent === hash){
+    console.log("oooh baby what is good")
     res.status(201).send('hmm the hashes do be matching')
 
   }

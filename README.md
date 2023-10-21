@@ -13,7 +13,7 @@ At the moment we have created 4 files in the root directory of the server.
 Now enter the following in terminal:
 ~$ openssl x509 -req -in localhost.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out localhost.crt -days 365 -sha256 -extfile localhost.ext #on prompt enter the PEM password from the first step
 ```
-and then navigate to server.js comment and delete anything related to starting the server then add the following:
+and then navigate to server.js comment or delete anything related to starting the server and the port assignment then add the following:
 ```
 // start server
 let server = https.createServer(httpsOptions, app);
@@ -52,7 +52,6 @@ curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/your/file
 To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile.txt, and send a GET request.
 You can use Invoke-WebRequest as well for endpoint 1:
 ```
-
 $url = "http://localhost:3000/api/data1"
 
 $response = Invoke-WebRequest -Uri $url -Method Get
@@ -60,7 +59,9 @@ $response = Invoke-WebRequest -Uri $url -Method Get
 # Print the response bod
 Write-Output $response.Content
 ```
-But for 2 and 3 I think that would be another project on it's own.
+But for 2 and 3 it's not very straightforward trying to send mutlipart-form/data using  Invoke-WebRequest or Invoke-RestMethod, but you can if you want and here is how:
+
+First of you all since you are using powershell you must be aware of funny windows is with the backslash ('/'), so we need to take that into account before getting to the intresting stuff 
 
 # Note:
 
