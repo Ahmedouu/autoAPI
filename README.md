@@ -1,5 +1,5 @@
 
-An https API that calls itself, hashes txt files as well and compares the resulting hash, self signed certificates included because I like https more than http, doesn't mean more security though at this point it's just fashion.
+An https API that calls itself, hashes txt files as well and compares the resulting hash, self signed certificates included after the fact because I like https more than http, doesn't mean more security though at this point it's just fashion.
 
 # Set Up:
 Ignore this and jump straight to One last install (highlighted) ... if you don't care about fake https (all https is fake btw).
