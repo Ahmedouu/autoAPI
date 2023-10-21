@@ -2,7 +2,8 @@
 An https API that calls itself, hashes txt files as well and compares the resulting hash, self signed certificates included because I like https more than http, doesn't mean more security though at this point it's just fashion.
 
 # Set Up:
-if you want to run the server in https use WSL on windows or use a unix machine, ignore this and jump straight to One last install (highlighted) ... if you don't care about fake https (all https is fake btw):
+Ignore this and jump straight to One last install (highlighted) ... if you don't care about fake https (all https is fake btw).
+if you want to run the server in https use WSL on windows or use a unix machine,
 ```
 ~$ openssl genrsa -des3 -out ca.key 2048 #this will prompt a PEM password enter it
 ~$ openssl req -x509 -new -nodes -key ca.key -sha256 -days 365 -out ca.crt #enter the password from the previous step, then enter sensible values or just  leave the field blank
@@ -46,7 +47,6 @@ using POSTMAN, navigate to body ==> form data here is what the endpoint 3 reques
 Here is an example of curl for endpoint 2 if you prefer curl:
 ```
 curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/your/file" http://localhost:3000/api/data2
-
 ```
 
 To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile.txt, and send a GET request.
@@ -59,10 +59,48 @@ $response = Invoke-WebRequest -Uri $url -Method Get
 # Print the response bod
 Write-Output $response.Content
 ```
-But for 2 and 3 it's not very straightforward trying to send mutlipart-form/data using  Invoke-WebRequest or Invoke-RestMethod, but you can if you want and here is how:
+But for 2 and 3 it's not very straightforward trying to send mutlipart/form-data using  Invoke-WebRequest or Invoke-RestMethod you will run into boundary errors if you attempt to do it the way curl does it, but you can if you want and here is how:
+First of you all since you are using powershell you must be aware of funny windows is with the backslash ('/'), so we need to take that into account before getting to the intresting stuff, what seems to work for me when using powershell is the combination of single quotes '' and backslashes // for paths, I advise to use this script that checks if the file exists and is readable and properly encoded:
+```
+$filePath = 'C:\\path\\To\\autoAPI\\utils\\randomFile.txt' #single quotes and double backslashes.
+if (Test-Path $filePath) {
+    try {
+        $fileBytes = [System.IO.File]::ReadAllBytes($filePath)
+        $fileEnc = [System.Text.Encoding]::GetEncoding('UTF-8').GetString($fileBytes) #convert the content into a string using UTF-8 encoding
+        Write-Output "File Found and properly encoded"
+    } catch {
+        Write-Output "Error reading file: $_"
+    }
+} else {
+    Write-Output "File not found: $filePath"
+}
+```
+If you get any errors here check the path and alterante between using single quotes and double quotes, single backslash and double backslash until the file is found and readable.  
+Afterwards you would need to use the following script to test endpoint 2:
+```
+$FilePath = 'C:\\path\\to\autoAPI\\utils\\randomFile.txt' 
+$URL = 'http://localhost:3000/api/data2'
 
-First of you all since you are using powershell you must be aware of funny windows is with the backslash ('/'), so we need to take that into account before getting to the intresting stuff 
+# Read the file and encode it as a UTF-8 string
+$fileBytes = [System.IO.File]::ReadAllBytes($FilePath);
+$fileEnc = [System.Text.Encoding]::GetEncoding('UTF-8').GetString($fileBytes);
 
+# Create a unique boundary for the multipart/form-data
+$boundary = [System.Guid]::NewGuid().ToString();
+$LF = "`r`n";
+# Construct the body of the POST request
+$bodyLines = ( 
+    "--$boundary",
+    "Content-Disposition: form-data; name=`"file`"; filename=`"temp.txt`"",
+    "Content-Type: application/octet-stream$LF",
+    $fileEnc,
+    "--$boundary--$LF" 
+) -join $LF
+
+# Send the POST reques
+Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines
+```
+You could also use Invoke-WebRequest but it will retunes the entire HTTP response you could declare a variable $reponse = Invoke-WebRequest .... and access the content using $response.Content
 # Note:
 
 You can also use html files if you like the hashing function takes cares of normalizing html files as well.
