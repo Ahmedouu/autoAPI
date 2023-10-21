@@ -136,7 +136,7 @@ $bodyLines = (
 # Send the POST request
 Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines
 ```
-
+You can find the powershell scripts in the root directory of the project for your convenience
 
 # Note:
 
