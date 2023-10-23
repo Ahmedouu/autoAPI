@@ -1,5 +1,6 @@
 
 An https API that calls itself, hashes txt files as well and compares the resulting hash, self signed certificates included after the fact because I like https more than http, doesn't mean more security though at this point it's just fashion.
+The main goal of this project is fun, and to share with anyone who might be intrested how to use powershell to interact with REST apis.
 
 # Set Up:
 Ignore this and jump straight to One last install (highlighted) ... if you don't care about fake https (all https is fake btw).
@@ -52,6 +53,7 @@ curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/your/file
 To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile.txt, and send a GET request.
 You can use Invoke-WebRequest as well for endpoint 1:
 ```
+
 $url = "http://localhost:3000/api/data1"
 
 $response = Invoke-WebRequest -Uri $url -Method Get
