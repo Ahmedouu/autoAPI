@@ -6,8 +6,8 @@ The main goal of this project is fun, and to share with anyone who might be intr
 Ignore this and jump straight to One last install (highlighted) ... if you don't care about fake https (all https is fake btw).
 if you want to run the server in https use WSL on windows or use a unix machine,
 ```
-~$ openssl genrsa -des3 -out ca.key 2048 #this will prompt a PEM password enter it
-~$ openssl req -x509 -new -nodes -key ca.key -sha256 -days 365 -out ca.crt #enter the password from the previous step, then enter sensible values or just  leave the field blank
+~$ openssl genrsa -des3 -out ca.key 2048 #On prompt enter PEM password enter it
+~$ openssl req -x509 -new -nodes -key ca.key -sha256 -days 365 -out ca.crt #enter the password from the previous step, then enter sensible values or just leave the field blank
 ~$ openssl genrsa -out localhost.key 2048
 ~$ openssl req -new -key localhost.key -out localhost.csr -addext "subjectAltName = DNS:localhost" #repeat step 2
 
@@ -15,8 +15,27 @@ At the moment we have created 4 files in the root directory of the server.
 Now enter the following in terminal:
 ~$ openssl x509 -req -in localhost.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out localhost.crt -days 365 -sha256 -extfile localhost.ext #on prompt enter the PEM password from the first step
 ```
-and then navigate to server.js comment or delete anything related to starting the server and the port assignment then add the following:
+P.S: we are using localhost here but for my next project I will use an IP, this is just a demo and a memo.
+
 ```
+install https:
+```
+npm install https
+```
+
+```
+const https = require('https'); //add this to the top of the server with the other requires
+```
+This will encrypt your communication with SSL, but since it's a self signed certificate you will need to disable SSL verification in your client as well, and if you are using powershell 5.1 you must disable it with a script you will find in autoapi.ps1,  for version 6 you can you use -SkipCertificateCheck in your request. 
+
+# One last install to make sure we have everything then run the server:
+If you don't care about https, remove or comment the following lines from the server:
+```
+//https options 
+const httpsOptions = {
+	cert: fs.readFileSync('./localhost.crt'),
+	key: fs.readFileSync('./localhost.key')
+  };
 // start server
 let server = https.createServer(httpsOptions, app);
 // set port, listen for requests
@@ -24,15 +43,12 @@ server.listen(3000, ()=>{
   console.log('I am listening.....');
 })
 ```
-P.S: you will need to install https:
+replace it with:
 ```
-npm install https
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server running on port ${port}`));
 ```
-then on top of server.js add the following: 
-```
-const https = require('https'); //add this to the top of the server with the other requires
-```
-# One last install to make sure we have everything then run the server:
+
 ```
 npm install
 node server.js
@@ -53,7 +69,6 @@ curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/your/file
 To test endpoint1, you can go to /utils and replace the randomFile.txt by any file you want just make sure to rename it to randomFile.txt, and send a GET request.
 You can use Invoke-WebRequest as well for endpoint 1:
 ```
-
 $url = "http://localhost:3000/api/data1"
 
 $response = Invoke-WebRequest -Uri $url -Method Get

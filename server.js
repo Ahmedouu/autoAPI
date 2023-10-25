@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const fs = require('fs')
+const fs = require('fs');
+const https = require('https');
 const {HASHER} = require('./utils/hashing')
 const filePath = './utils/randomFile.txt'
 app.use(express.json());
@@ -11,8 +12,26 @@ const upload = multer();
 let hash;
 
 
+//https options 
+const httpsOptions = {
+	cert: fs.readFileSync('./localhost.crt'),
+	key: fs.readFileSync('./localhost.key')
+  };
+
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+  }); 
+
+
+
 // endpoint 1 // this endpoint takes a file and hashes it and returns the hash of the file 
 app.get('/api/data1',  (req, res) => {
+
+  if (req.protocol === 'https') {
+    console.log(req.socket.getProtocol());
+} else {
+    console.log('Not SSL');
+}
   try  
   {fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
@@ -49,18 +68,18 @@ app.post('/api/data2', upload.any(), async (req, res) => {
   }
   const fileContent = fileBuffer.toString('utf8'); // convert buffer to string
   const newHashedContent = HASHER(fileContent); // hash the content
-
-  await axios.get('http://localhost:3000/api/data1')
+  
+  await axios.get('https://localhost:3000/api/data1', {httpsAgent})
   .then(response => {
     console.log('cest tres chelo tu sais mira',response.data['hashedFile']);
     hash = response.data['hashedFile']
   })
   .catch(error => {
-    console.error('Error:', error);
+    console.error('error in calling myself:', error);
   });
   if (newHashedContent === hash){
     console.log("oooh baby what is good")
-    res.status(201).send('hmm the hashes do be matching', hash)
+    res.status(200).send('hmm the hashes do be matching')
 
   }
   else {
@@ -146,5 +165,9 @@ app.post('/api/data4', upload.fields([{ name: 'file1', maxCount: 1 }, { name: 'f
 
 
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+// start server
+let server = https.createServer(httpsOptions, app);
+// set port, listen for requests
+server.listen(3000, ()=>{
+  console.log('I am listening.....');
+})

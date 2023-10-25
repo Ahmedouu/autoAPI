@@ -31,12 +31,6 @@ if (Test-Path $filePath) {
     Write-Output "File not found: $filePath"
 }
 
-
-#
-
-
-
-
 # Test endpoint 2 api/data2
 $FilePath = 'C:\\Users\\USER\\Downloads\\TextDOC.txt' #change this
 $URL = 'http://localhost:3000/api/data2'
@@ -86,3 +80,19 @@ $bodyLines = (
 ) -join $LF
 
 Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines
+
+###########################################
+# Version 5 disable SSL certificate check
+
+add-type @"
+    using System.Net;
+    using System.Security.Cryptography.X509Certificates;
+    public class TrustAllCertsPolicy : ICertificatePolicy {
+        public bool CheckValidationResult(
+            ServicePoint srvPoint, X509Certificate certificate,
+            WebRequest request, int certificateProblem) {
+            return true;
+        }
+    }
+"@
+[System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
