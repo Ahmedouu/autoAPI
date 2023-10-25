@@ -17,20 +17,12 @@ Now enter the following in terminal:
 ```
 P.S: we are using localhost here but for my next project I will use an IP, this is just a demo and a memo.
 
-```
-install https:
-```
-npm install https
-```
-
-```
-const https = require('https'); //add this to the top of the server with the other requires
-```
 This will encrypt your communication with SSL, but since it's a self signed certificate you will need to disable SSL verification in your client as well, and if you are using powershell 5.1 you must disable it with a script you will find in autoapi.ps1,  for version 6 you can you use -SkipCertificateCheck in your request. 
 
 # One last install to make sure we have everything then run the server:
 If you don't care about https, remove or comment the following lines from the server:
 ```
+const https = require('https');
 //https options 
 const httpsOptions = {
 	cert: fs.readFileSync('./localhost.crt'),
@@ -48,6 +40,7 @@ replace it with:
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
 ```
+# Run the server
 
 ```
 npm install
